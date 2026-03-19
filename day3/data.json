@@ -1,0 +1,13 @@
+{
+  "name": "Node.js JSON Server",
+  "version": "1.0.0",
+  "description": "示例数据文件",
+  "features": [
+    "读取本地 JSON 文件",
+    "返回 HTTP 响应",
+    "错误处理",
+    "CORS 支持"
+  ],
+  "author": "CodeFree",
+  "timestamp": "2026-03-19T07:17:57.201Z"
+}
