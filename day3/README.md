@@ -1,91 +1,67 @@
-# Node.js JSON Server
+# Day 3 - Node 核心模块
 
-一个简单的 Node.js 服务，用于读取本地 JSON 文件并通过 HTTP 接口返回。
+**日期**: 2026-03-20
 
-## 功能特性
+**学习目标**: Node 核心模块 fs、path、http
 
-- ✅ 读取本地 JSON 文件
-- ✅ 返回 HTTP JSON 响应
-- ✅ 完善的错误处理
-- ✅ CORS 支持
-- ✅ 异步操作使用 try/catch
+## 📖 学习笔记
 
-## 项目结构
+### fs 模块
+- 文件系统操作
+- 支持同步和异步（推荐异步）
 
-```
-day3/
-├── server.js       # 主服务文件
-├── data.json       # 示例 JSON 数据文件
-├── package.json    # 项目配置文件
-└── README.md       # 项目说明文档
-```
+### path 模块
+- 路径处理
+- `path.join()`、`path.resolve()`
 
-## 安装与运行
+### http 模块
+- 创建 HTTP 服务
+- `http.createServer()`
 
-### 1. 安装依赖
-```bash
-npm install
-```
+## 💻 实操产出
 
-### 2. 启动服务
-```bash
-npm start
-```
+- mini-http-server.ts - 读取本地 JSON 的 HTTP 服务
 
-### 3. 访问服务
-服务启动后，在浏览器或使用 curl 访问：
-```
-http://localhost:3000
-```
+## 📝 练习题答案
 
-## API 说明
+### 1. 读取文件
+```javascript
+import fs from 'fs/promises'
+import path from 'path'
 
-### GET /
-
-读取并返回 `data.json` 文件的内容。
-
-**响应示例：**
-```json
-{
-  "name": "Node.js JSON Server",
-  "version": "1.0.0",
-  "description": "示例数据文件",
-  "features": [
-    "读取本地 JSON 文件",
-    "返回 HTTP 响应",
-    "错误处理",
-    "CORS 支持"
-  ],
-  "author": "CodeFree",
-  "timestamp": "2026-03-19T07:17:57.201Z"
+async function readJsonFile(filename) {
+  const filePath = path.join(__dirname, 'data', filename)
+  const content = await fs.readFile(filePath, 'utf-8')
+  return JSON.parse(content)
 }
 ```
 
-**错误响应：**
-
-- 404: JSON 文件不存在
-- 400: JSON 格式错误
-- 405: 不支持的 HTTP 方法
-- 500: 服务器内部错误
-
-## 自定义配置
-
-在 `server.js` 中可以修改以下配置：
-
+### 2. HTTP 服务
 ```javascript
-const PORT = 3000;  // 修改端口号
-const JSON_FILE_PATH = path.join(__dirname, 'data.json');  // 修改 JSON 文件路径
+import http from 'http'
+
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' })
+  res.end(JSON.stringify({ message: 'Hello!' }))
+})
+
+server.listen(3000)
 ```
 
-## 代码规范
+### 3. 完整示例
+```javascript
+import http from 'http'
+import fs from 'fs/promises'
 
-- 变量命名：`camelCase`
-- 缩进：2个空格
-- 注释：复杂逻辑需添加行内说明
-- 错误处理：异步操作必须用 `try/catch`
+const server = http.createServer(async (req, res) => {
+  res.writeHead(200, { 'Content-Type': 'application/json' })
+  try {
+    const data = await fs.readFile('./data.json', 'utf-8')
+    res.end(data)
+  } catch (err) {
+    res.end(JSON.stringify({ error: 'File not found' }))
+  }
+})
 
-## 技术栈
-
-- Node.js 原生 `http` 模块
-- Node.js 原生 `fs` 模块（异步 API）
-- Node.js 原生 `path` 模块
+server.listen(8080, () => console.log('Server running on 8080'))
+```
